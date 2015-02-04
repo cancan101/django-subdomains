@@ -6,7 +6,7 @@ except ImportError:
     from urllib.parse import urlunparse
 
 from django.conf import settings
-from django.contrib.sites.models import Site
+
 from django.core.urlresolvers import reverse as simple_reverse
 from django.core.urlresolvers import NoReverseMatch
 
@@ -14,9 +14,16 @@ subdomain_globals = threading.local()
 UNSET = object()
 
 
-def current_site_domain():
-    domain = Site.objects.get_current().domain
+def current_domain():
+    from django.contrib.sites.models import Site
+    return Site.objects.get_current().domain
 
+
+def current_site_domain():
+    if hasattr(settings, 'SUBDOMAINS_DOMAIN'):
+        domain = settings.SUBDOMAINS_DOMAIN
+    else:
+        domain = current_domain()
     prefix = 'www.'
     if getattr(settings, 'REMOVE_WWW_FROM_DOMAIN', False) \
             and domain.startswith(prefix):
