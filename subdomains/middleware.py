@@ -27,7 +27,7 @@ class SubdomainMiddleware(object):
         for this request.
         """
 
-        fn_path = getattr(settings, 'SUBDOMAIN_GET_DOMAIN')
+        fn_path = getattr(settings, 'SUBDOMAIN_GET_DOMAIN', None)
         if not fn_path:
             get_domain_for_request = lambda request: current_site_domain()
         else:
